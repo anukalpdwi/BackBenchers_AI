@@ -4,103 +4,190 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Image Generator</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container-fluid">
-        <header class="py-4 text-center">
-            <h1 class="display-4"><i class="fas fa-images me-3"></i>Image Generator</h1>
-            <p class="lead">Find beautiful images based on your descriptions using Unsplash</p>
-        </header>
-
-        <main class="container my-4">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <!-- Prompt Form -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h2 class="h5 mb-0">Generate an Image</h2>
-                        </div>
-                        <div class="card-body">
-                            <form id="imageGeneratorForm">
+    <!-- Header -->
+    <header class="header-container mb-4">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" stroke="#3f83f8"></circle>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="#3f83f8"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9" stroke="#3f83f8"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9" stroke="#3f83f8"></line>
+                    </svg>
+                    AI Image Generator
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="https://unsplash.com/?utm_source=ai_image_generator&utm_medium=referral" target="_blank">
+                                <i class="fas fa-camera me-1"></i>Powered by Unsplash
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#about">
+                                <i class="fas fa-info-circle me-1"></i>About
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1 class="hero-title">AI Image Generator</h1>
+                <p class="hero-description">
+                    Generate beautiful, high-quality images with artificial intelligence. 
+                    Simply enter a description and our AI will create stunning visuals based on your prompt.
+                </p>
+            </section>
+            
+            <!-- Generator Form -->
+            <section>
+                <div class="row justify-content-center">
+                    <div class="col-md-10 col-lg-8">
+                        <div class="generator-card">
+                            <form id="generator-form">
                                 <div class="mb-3">
-                                    <label for="prompt" class="form-label">Describe what you want to see</label>
-                                    <textarea class="form-control" id="prompt" rows="3" placeholder="Enter a detailed description of the image you want to generate..." required></textarea>
+                                    <label for="prompt-input" class="form-label">Enter your prompt</label>
+                                    <textarea 
+                                        id="prompt-input" 
+                                        class="form-control" 
+                                        rows="3" 
+                                        placeholder="Describe the image you want to generate..."
+                                        required
+                                    ></textarea>
+                                    <div class="form-text">Be specific and detailed for better results</div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="style" class="form-label">Art Style</label>
-                                        <select class="form-select" id="style">
-                                            <option value="realistic">Realistic</option>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="style-select" class="form-label">Image style</label>
+                                        <select id="style-select" class="form-select">
+                                            <option value="photo">Photographic</option>
+                                            <option value="digital-art">Digital Art</option>
                                             <option value="anime">Anime</option>
-                                            <option value="cartoon">Cartoon</option>
-                                            <option value="painting">Painting</option>
-                                            <option value="sketch">Sketch</option>
+                                            <option value="oil-painting">Oil Painting</option>
+                                            <option value="black-and-white">Black & White</option>
+                                            <option value="minimal">Minimal</option>
+                                            <option value="vibrant">Vibrant</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label for="imageCount" class="form-label">Number of Images</label>
-                                        <select class="form-select" id="imageCount">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="4">4</option>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="image-count" class="form-label">Number of images</label>
+                                        <select id="image-count" class="form-select">
+                                            <option value="1">1 image</option>
+                                            <option value="2">2 images</option>
+                                            <option value="4">4 images</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary" id="generateBtn">
+                                
+                                <div class="alert alert-danger d-none" role="alert" id="error-alert">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    <span id="error-message">Error message goes here</span>
+                                </div>
+                                
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" id="reset-btn" class="btn btn-outline-secondary">
+                                        <i class="fas fa-redo me-1"></i>Reset
+                                    </button>
+                                    <button type="submit" id="generate-btn" class="btn btn-primary">
                                         <i class="fas fa-magic me-2"></i>Generate
                                     </button>
                                 </div>
                             </form>
                         </div>
                     </div>
-
-                    <!-- Loading Indicator -->
-                    <div id="loadingContainer" class="text-center p-5 d-none">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-3">Generating your image. This may take a minute...</p>
+                </div>
+            </section>
+            
+            <!-- Loading indicator -->
+            <section id="loading-container" class="loading-container d-none">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
-
-                    <!-- Error Alert -->
-                    <div id="errorAlert" class="alert alert-danger d-none" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        <span id="errorMessage">An error occurred.</span>
-                    </div>
-
-                    <!-- Results Container -->
-                    <div id="resultsContainer" class="card d-none">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h2 class="h5 mb-0">Generated Images</h2>
-                            <button id="newGenerationBtn" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-plus me-1"></i>New Generation
-                            </button>
-                        </div>
-                        <div class="card-body">
-                            <div id="imagesContainer" class="row g-3">
-                                <!-- Generated images will be inserted here by JavaScript -->
-                            </div>
+                    <p class="loading-text mt-3 pulse-animation">Generating your images...</p>
+                </div>
+            </section>
+            
+            <!-- Results Section -->
+            <section id="results-container" class="results-container d-none">
+                <h2 class="text-center mb-4">Generated Images</h2>
+                <div id="images-container" class="row"></div>
+            </section>
+            
+            <!-- About Section -->
+            <section id="about" class="mt-5 pt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-10 col-lg-8">
+                        <div class="generator-card">
+                            <h2 class="mb-4">About AI Image Generator</h2>
+                            <p>
+                                Our AI Image Generator uses the power of artificial intelligence to create stunning 
+                                images based on your text descriptions. We leverage the high-quality photo library 
+                                from Unsplash to provide you with beautiful visuals that match your creativity.
+                            </p>
+                            <p>
+                                You can generate images in various styles including photographic, digital art, 
+                                anime, oil paintings, and more. Simply enter a detailed description, choose your 
+                                preferred style, and our AI will do the rest.
+                            </p>
+                            <p>
+                                All images are sourced from Unsplash and are free to use under their 
+                                <a href="https://unsplash.com/license" target="_blank">license</a>. 
+                                Please make sure to credit the photographers when using these images in your projects.
+                            </p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
-
-        <footer class="text-center mt-5 py-3 text-muted">
-            <p>Image Generator powered by <a href="https://unsplash.com/?utm_source=image_generator&utm_medium=referral" target="_blank">Unsplash</a> &copy; <span id="currentYear"></span></p>
-        </footer>
-    </div>
-
-    <!-- Bootstrap JS Bundle with Popper -->
+            </section>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="mt-auto">
+        <div class="container">
+            <p>
+                &copy; 2025 AI Image Generator. Powered by 
+                <a href="https://unsplash.com/?utm_source=ai_image_generator&utm_medium=referral" target="_blank">Unsplash</a>.
+            </p>
+            <p>
+                <small>
+                    This application uses the Unsplash API but is not endorsed or certified by Unsplash.
+                    All rights to the respective owners.
+                </small>
+            </p>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Application JavaScript -->
+    
+    <!-- Custom JS -->
     <script src="js/app.js"></script>
 </body>
 </html>

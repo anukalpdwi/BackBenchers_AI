@@ -1,91 +1,199 @@
-/* Additional custom styles beyond Bootstrap */
+/* Main Styles for AI Image Generator */
 
-/* Improve spacing and readability */
+/* Custom dark theme using Bootstrap's dark mode variables */
+:root {
+    --custom-bg: #111827;
+    --custom-card-bg: #1f2937;
+    --custom-accent: #3f83f8;
+    --custom-text: #f3f4f6;
+    --custom-muted: #9ca3af;
+    --custom-border: #374151;
+}
+
+/* General Styles */
 body {
+    background-color: var(--custom-bg);
+    color: var(--custom-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-footer {
-    margin-top: auto;
-}
-
-/* Style for image cards */
-.image-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
-}
-
-.image-card:hover {
-    transform: translateY(-5px);
-}
-
-.image-info {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 8px;
-    text-align: center;
-    font-size: 0.75rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.image-actions {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10px;
+/* Header and Brand Styling */
+.navbar-brand {
+    font-weight: 700;
     display: flex;
-    justify-content: space-around;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.image-card:hover .image-actions,
-.image-card:hover .image-info {
-    opacity: 1;
+.brand-icon {
+    width: 32px;
+    height: 32px;
+}
+
+.header-container {
+    background-color: rgba(31, 41, 55, 0.98);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--custom-border);
+}
+
+/* Main Content Styles */
+main {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #3f83f8, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    color: var(--custom-muted);
+    max-width: 700px;
+    margin: 0 auto 2rem;
+}
+
+/* Form Elements */
+.form-control, .form-select {
+    background-color: var(--custom-card-bg);
+    border-color: var(--custom-border);
+    color: var(--custom-text);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--custom-card-bg);
+    border-color: var(--custom-accent);
+    color: var(--custom-text);
+    box-shadow: 0 0 0 0.25rem rgba(63, 131, 248, 0.25);
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.generator-card {
+    background-color: var(--custom-card-bg);
+    border-radius: 0.5rem;
+    border: 1px solid var(--custom-border);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Results and Images */
+.results-container {
+    margin-top: 2rem;
+}
+
+.image-card {
+    background-color: var(--custom-card-bg);
+    border-radius: 0.5rem;
+    border: 1px solid var(--custom-border);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    position: relative;
 }
 
 .generated-image {
     width: 100%;
     height: auto;
-    border-radius: 8px;
+    display: block;
+    border-radius: 0.5rem 0.5rem 0 0;
+    aspect-ratio: 16/9;
     object-fit: cover;
-    aspect-ratio: 1/1;
 }
 
-/* Loading animation enhancements */
-#loadingContainer {
-    min-height: 200px;
+.image-info {
+    padding: 0.75rem;
+    border-top: 1px solid var(--custom-border);
+    font-size: 0.875rem;
 }
 
-.spinner-border {
-    width: 3rem;
-    height: 3rem;
+.image-actions {
+    padding: 0.75rem;
+    border-top: 1px solid var(--custom-border);
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
 }
 
-/* Prompt input styling */
-#prompt {
-    min-height: 100px;
-    resize: vertical;
+/* Loading Animation */
+.loading-container {
+    text-align: center;
+    padding: 3rem 0;
 }
 
-/* Responsive adjustments */
+.loading-text {
+    margin-top: 1rem;
+    font-size: 1.25rem;
+    color: var(--custom-muted);
+}
+
+/* Footer */
+footer {
+    background-color: var(--custom-card-bg);
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--custom-border);
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--custom-muted);
+}
+
+footer a {
+    color: var(--custom-accent);
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Media Queries */
 @media (max-width: 768px) {
-    .card-header {
-        flex-direction: column;
-        align-items: flex-start;
+    .hero-title {
+        font-size: 2rem;
     }
     
-    #newGenerationBtn {
-        margin-top: 10px;
+    .hero-description {
+        font-size: 1rem;
     }
+    
+    .generator-card {
+        padding: 1rem;
+    }
+}
+
+/* Animation for loading */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.pulse-animation {
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Hover effects */
+.image-card:hover .image-actions {
+    background-color: rgba(31, 41, 55, 0.95);
+}
+
+.copy-prompt-btn:active {
+    transform: scale(0.98);
 }

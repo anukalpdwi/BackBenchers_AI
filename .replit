@@ -1,11 +1,22 @@
-modules = ["python-3.11", "php"]
+run = "php -S 0.0.0.0:5000"
+onBoot = "php -S 0.0.0.0:5000"
+entrypoint = "index.html"
+hidden = [".build", ".config"]
+modules = ["php-8.1"]
 
 [nix]
-channel = "stable-24_05"
+channel = "stable-22_11"
 
-[deployment]
-deploymentTarget = "autoscale"
-run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
+[env]
+XDG_CONFIG_HOME = "/home/runner/.config"
+
+[languages]
+[languages.php]
+pattern = "**/*.php"
+
+[[ports]]
+localPort = 8000
+externalPort = 80
 
 [workflows]
 runButton = "Project"
@@ -17,10 +28,10 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Start application"
+args = "phpserver"
 
 [[workflows.workflow]]
-name = "Start application"
+name = "phpserver"
 author = "agent"
 
 [workflows.workflow.metadata]
@@ -31,9 +42,7 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app"
-waitForPort = 5000
+args = "curl -i http://localhost:8000/"
 
-[[ports]]
-localPort = 5000
-externalPort = 80
+[deployment]
+run = ["sh", "-c", "curl -i http://localhost:8000/"]

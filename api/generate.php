@@ -1,170 +1,195 @@
 <?php
 /**
- * Image Generation API Endpoint
- * Handles communication with StarryAI API
+ * API endpoint for image generation
  */
-
-// Allow cross-origin requests (if needed)
-header('Content-Type: application/json');
-
-// Include configuration
 require_once 'config.php';
 
 // Get the request body
-$inputJSON = file_get_contents('php://input');
-$input = json_decode($inputJSON, TRUE);
+$requestBody = file_get_contents('php://input');
+$data = json_decode($requestBody, true);
 
-// Validate input
-if (!isset($input['prompt']) || empty(trim($input['prompt']))) {
-    sendErrorResponse('Prompt cannot be empty');
-    exit;
+// Validate the request
+if (!$data || !isset($data['prompt']) || empty($data['prompt'])) {
+    sendErrorResponse('Prompt is required');
 }
 
-// Extract parameters
-$prompt = $input['prompt'];
-$style = isset($input['style']) ? $input['style'] : 'realistic';
-$imageCount = isset($input['imageCount']) ? (int)$input['imageCount'] : 1;
+// Get request parameters
+$prompt = $data['prompt'];
+$style = isset($data['style']) ? $data['style'] : 'photo';
+$count = isset($data['count']) ? intval($data['count']) : 1;
 
-// Ensure image count is valid (1, 2, or 4)
-if (!in_array($imageCount, [1, 2, 4])) {
-    $imageCount = 1;
+// Limit count to a reasonable number
+$count = min(max(1, $count), 4);
+
+// Check if we have the Unsplash API key
+if (empty($config['unsplash']['access_key'])) {
+    sendErrorResponse('Unsplash API key is not configured.', 500);
 }
 
+// Try Unsplash API first as it's more reliable for photos
 try {
-    // Make API request to StarryAI
-    $result = generateImagesFromStarryAI($prompt, $style, $imageCount);
-    
-    // Return successful response
-    echo json_encode([
-        'success' => true,
-        'images' => $result,
-        'message' => 'Images generated successfully'
-    ]);
-    
-} catch (Exception $e) {
-    sendErrorResponse($e->getMessage());
-}
-
-/**
- * Generate images using StarryAI API
- * 
- * @param string $prompt Text prompt for image generation
- * @param string $style Art style to apply
- * @param int $count Number of images to generate
- * @return array Array of image data
- */
-function generateImagesFromStarryAI($prompt, $style, $count) {
-    global $config;
-    
-    // Prepare API endpoint
-    $url = 'https://api.starryai.com/v1/images/generate';
-    
-    // Map our style options to what StarryAI expects
-    $styleMapping = [
-        'realistic' => 'photographic',
-        'anime' => 'anime',
-        'cartoon' => 'cartoon',
-        'painting' => 'oil-painting',
-        'sketch' => 'pencil-sketch'
+    // Prepare Unsplash API request
+    $apiUrl = $config['unsplash']['api_url'];
+    $queryParams = [
+        'query' => $prompt,
+        'per_page' => $count,
+        'orientation' => 'landscape'
     ];
     
-    // Default to photographic if style not in mapping
-    $starryAIStyle = isset($styleMapping[$style]) ? $styleMapping[$style] : 'photographic';
+    // Add style-specific parameters
+    if ($style == 'black-and-white') {
+        $queryParams['color'] = 'black_and_white';
+    } elseif ($style == 'minimal') {
+        $queryParams['content_filter'] = 'high';
+    } elseif ($style == 'vibrant') {
+        $queryParams['color'] = 'vibrant';
+    }
     
-    // Prepare request data
-    $postData = [
-        'prompt' => $prompt,
-        'style' => $starryAIStyle,
-        'num_images' => $count,
-        'width' => 512,
-        'height' => 512
-    ];
+    // Build request URL
+    $requestUrl = $apiUrl . '?' . http_build_query($queryParams);
     
-    // Initialize cURL session
-    $ch = curl_init($url);
-    
-    // Set cURL options
+    // Setup cURL request
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $requestUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $config['starryai_api_key']
+        'Authorization: Client-ID ' . $config['unsplash']['access_key'],
+        'Accept-Version: v1'
     ]);
     
     // Execute the request
     $response = curl_exec($ch);
-    
-    // Check for cURL errors
-    if (curl_errno($ch)) {
-        throw new Exception('API request failed: ' . curl_error($ch));
-    }
-    
-    // Get HTTP status code
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
-    // Close cURL session
     curl_close($ch);
     
-    // Parse response
-    $responseData = json_decode($response, true);
-    
-    // Check for API errors
-    if ($httpCode !== 200) {
-        $errorMessage = isset($responseData['error']['message']) 
-            ? $responseData['error']['message'] 
-            : 'API request failed with status code ' . $httpCode;
-        
+    // Check for errors
+    if ($httpCode != 200) {
+        $errorData = json_decode($response, true);
+        $errorMessage = isset($errorData['errors']) ? implode(', ', $errorData['errors']) : 'API request failed';
         throw new Exception($errorMessage);
     }
     
-    // For testing purposes, we'll simulate a response if the API isn't actually connected
-    // In a real application, this would be removed
-    if (!isset($responseData['images']) || empty($responseData['images'])) {
-        // This is a fallback for development/testing
-        // In production, this should not be included
-        $mockImages = [];
-        
-        // Create the mock images based on requested count
-        for ($i = 0; $i < $count; $i++) {
-            $mockImages[] = [
-                'id' => 'img_' . uniqid(),
-                'url' => 'https://via.placeholder.com/512x512.png?text=AI+Generated+Image+'.$i,
-                'prompt' => $prompt
-            ];
-        }
-        
-        // Log the issue (in production, handle more appropriately)
-        error_log("Warning: StarryAI API response did not contain images. Using placeholders.");
-        
-        return $mockImages;
+    // Parse the response
+    $responseData = json_decode($response, true);
+    
+    // Check if we have results
+    if (!isset($responseData['results']) || empty($responseData['results'])) {
+        sendErrorResponse('No images found for the given prompt. Please try another search term.');
     }
     
-    // Process and return the image data
+    // Format the results
     $images = [];
-    foreach ($responseData['images'] as $image) {
+    foreach ($responseData['results'] as $image) {
         $images[] = [
-            'id' => $image['id'] ?? ('img_' . uniqid()),
-            'url' => $image['url'],
-            'prompt' => $prompt
+            'url' => $image['urls']['regular'],
+            'full_url' => $image['urls']['full'],
+            'credit' => [
+                'name' => $image['user']['name'],
+                'link' => $image['user']['links']['html'] . '?utm_source=ai_image_generator&utm_medium=referral'
+            ]
         ];
     }
     
-    return $images;
+    // Return success response
+    sendJsonResponse([
+        'success' => true,
+        'images' => $images,
+        'source' => 'unsplash'
+    ]);
+    
+} catch (Exception $e) {
+    // Fallback to StarryAI if available
+    if (!empty($config['starryai']['api_key'])) {
+        try {
+            // Prepare StarryAI API request
+            $apiUrl = $config['starryai']['api_url'];
+            $requestData = [
+                'prompt' => $prompt,
+                'height' => 512,
+                'width' => 768,
+                'numberOfImages' => $count,
+                'style' => mapStyleToStarryAI($style)
+            ];
+            
+            // Setup cURL request
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $apiUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($requestData));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $config['starryai']['api_key'],
+                'Content-Type: application/json'
+            ]);
+            
+            // Execute the request
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+            // Check for errors
+            if ($httpCode != 200) {
+                $errorData = json_decode($response, true);
+                $errorMessage = isset($errorData['message']) ? $errorData['message'] : 'StarryAI API request failed';
+                throw new Exception($errorMessage);
+            }
+            
+            // Parse the response
+            $responseData = json_decode($response, true);
+            
+            // Format the results (StarryAI response format may vary)
+            $images = [];
+            if (isset($responseData['generations'])) {
+                foreach ($responseData['generations'] as $generation) {
+                    $images[] = [
+                        'url' => $generation['image_url'],
+                        'full_url' => $generation['image_url'],
+                        'credit' => [
+                            'name' => 'StarryAI',
+                            'link' => 'https://www.starryai.com'
+                        ]
+                    ];
+                }
+            }
+            
+            // Return success response
+            sendJsonResponse([
+                'success' => true,
+                'images' => $images,
+                'source' => 'starryai'
+            ]);
+            
+        } catch (Exception $starryError) {
+            // If StarryAI also fails, return the original Unsplash error
+            sendErrorResponse('Image generation failed: ' . $e->getMessage());
+        }
+    } else {
+        // No fallback available
+        sendErrorResponse('Image generation failed: ' . $e->getMessage());
+    }
 }
 
 /**
- * Send error response in JSON format
- * 
- * @param string $message Error message
- * @param int $statusCode HTTP status code
- * @return void
+ * Map frontend style to StarryAI style
  */
-function sendErrorResponse($message, $statusCode = 400) {
-    http_response_code($statusCode);
-    echo json_encode([
-        'success' => false,
-        'message' => $message
-    ]);
-    exit;
+function mapStyleToStarryAI($style) {
+    switch ($style) {
+        case 'photo':
+            return 'photographic';
+        case 'digital-art':
+            return 'digital-art';
+        case 'anime':
+            return 'anime';
+        case 'oil-painting':
+            return 'oil-painting';
+        case 'black-and-white':
+            return 'black-and-white';
+        case 'minimal':
+            return 'minimalist';
+        case 'vibrant':
+            return 'vibrant';
+        default:
+            return 'photographic';
+    }
 }
+?>

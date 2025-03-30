@@ -1,58 +1,61 @@
-// Main application JavaScript for AI Image Generator
-
+/**
+ * Main JavaScript for AI Image Generator
+ */
 document.addEventListener('DOMContentLoaded', function() {
-    // Set current year in footer
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    // DOM Elements
+    const generatorForm = document.getElementById('generator-form');
+    const promptInput = document.getElementById('prompt-input');
+    const styleSelect = document.getElementById('style-select');
+    const imageCountSelect = document.getElementById('image-count');
+    const generateBtn = document.getElementById('generate-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const loadingContainer = document.getElementById('loading-container');
+    const resultsContainer = document.getElementById('results-container');
+    const imagesContainer = document.getElementById('images-container');
+    const errorAlert = document.getElementById('error-alert');
+    const errorMessage = document.getElementById('error-message');
     
-    // Elements
-    const imageGeneratorForm = document.getElementById('imageGeneratorForm');
-    const promptInput = document.getElementById('prompt');
-    const styleSelect = document.getElementById('style');
-    const imageCountSelect = document.getElementById('imageCount');
-    const generateBtn = document.getElementById('generateBtn');
-    const loadingContainer = document.getElementById('loadingContainer');
-    const errorAlert = document.getElementById('errorAlert');
-    const errorMessage = document.getElementById('errorMessage');
-    const resultsContainer = document.getElementById('resultsContainer');
-    const imagesContainer = document.getElementById('imagesContainer');
-    const newGenerationBtn = document.getElementById('newGenerationBtn');
+    // Initialize
+    loadingContainer.classList.add('d-none');
+    resultsContainer.classList.add('d-none');
+    errorAlert.classList.add('d-none');
     
     // Event Listeners
-    imageGeneratorForm.addEventListener('submit', handleImageGeneration);
-    newGenerationBtn.addEventListener('click', resetForm);
+    generatorForm.addEventListener('submit', handleImageGeneration);
+    resetBtn.addEventListener('click', resetForm);
     
-    // Handle form submission for image generation
+    // Handle form submission
     function handleImageGeneration(e) {
         e.preventDefault();
         
         // Validate form
         if (!promptInput.value.trim()) {
-            showError('Please enter a prompt description.');
+            showError('Please enter a prompt to generate images');
             return;
         }
         
         // Show loading state
         showLoading();
         
-        // Collect form data
+        // Prepare data
         const formData = {
             prompt: promptInput.value.trim(),
             style: styleSelect.value,
-            imageCount: parseInt(imageCountSelect.value)
+            count: parseInt(imageCountSelect.value)
         };
         
-        // Call the API
+        // Call API and display results
         generateImage(formData)
             .then(response => {
-                if (response.success) {
+                if (response.success && response.images && response.images.length > 0) {
                     displayImages(response.images);
                 } else {
-                    showError(response.message || 'Failed to generate images.');
+                    throw new Error(response.error || 'Failed to generate images');
                 }
             })
             .catch(error => {
-                console.error('Error generating images:', error);
-                showError('An error occurred while connecting to the server. Please try again.');
+                console.error('Error:', error);
+                showError(error.message || 'An error occurred. Please try again.');
             })
             .finally(() => {
                 hideLoading();
@@ -62,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // API Call to generate image
     async function generateImage(formData) {
         try {
-            const response = await fetch('/api/generate', {
+            const response = await fetch('/api/generate.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

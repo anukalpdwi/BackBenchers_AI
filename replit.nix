@@ -1,6 +1,5 @@
-{pkgs}: {
-  deps = [
-    pkgs.postgresql
-    pkgs.openssl
-  ];
+{ pkgs }: {
+    deps = [
+        pkgs.php81
+    ];
 }

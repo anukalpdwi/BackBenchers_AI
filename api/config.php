@@ -1,29 +1,40 @@
 <?php
 /**
- * Configuration file for AI Image Generator
+ * Configuration file for the API
  */
 
-// Error handling in development (disable in production)
+// Enable error reporting for development
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Configuration settings
+// API Keys and configuration
 $config = [
-    // StarryAI API Key (get from environment variable)
-    'starryai_api_key' => getenv('STARRYAI_API_KEY') ?: 'default_key',
-    
-    // Maximum request timeout in seconds
-    'request_timeout' => 30,
-    
-    // Maximum image size
-    'max_image_size' => 1024 * 1024 * 5, // 5MB
-    
-    // Default image format
-    'default_format' => 'jpg'
+    'unsplash' => [
+        'access_key' => getenv('UNSPLASH_ACCESS_KEY'),
+        'api_url' => 'https://api.unsplash.com/search/photos',
+        'per_page' => 6
+    ],
+    'starryai' => [
+        'api_key' => getenv('STARRYAI_API_KEY'),
+        'api_url' => 'https://api.starryai.com/v1/generation'
+    ]
 ];
 
-// Security headers
-header('X-Content-Type-Options: nosniff');
-header('X-Frame-Options: DENY');
-header('X-XSS-Protection: 1; mode=block');
+// Helper function to return JSON response
+function sendJsonResponse($data, $statusCode = 200) {
+    header('Content-Type: application/json');
+    http_response_code($statusCode);
+    echo json_encode($data);
+    exit;
+}
+
+// Helper function to handle errors
+function sendErrorResponse($message, $statusCode = 400) {
+    $response = [
+        'success' => false,
+        'error' => $message
+    ];
+    sendJsonResponse($response, $statusCode);
+}
+?>
