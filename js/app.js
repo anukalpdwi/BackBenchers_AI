@@ -90,12 +90,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const imageCol = document.createElement('div');
             imageCol.className = 'col-md-6 col-lg-' + (12 / images.length > 6 ? 6 : 12 / images.length);
             
+            // Get credits info
+            const photographerName = imageData.credit?.name || 'Unsplash Photographer';
+            const photographerLink = imageData.credit?.link || 'https://unsplash.com';
+            
             imageCol.innerHTML = `
                 <div class="image-card">
-                    <img src="${imageData.url}" alt="AI Generated Image" class="generated-image">
+                    <img src="${imageData.url}" alt="Generated Image" class="generated-image">
+                    <div class="image-info">
+                        <small class="text-muted">
+                            Photo by <a href="${photographerLink}" target="_blank" rel="noopener noreferrer">${photographerName}</a> 
+                            on <a href="https://unsplash.com/?utm_source=ai_image_generator&utm_medium=referral" target="_blank">Unsplash</a>
+                        </small>
+                    </div>
                     <div class="image-actions">
-                        <a href="${imageData.url}" class="btn btn-sm btn-primary" download="ai-image.jpg" target="_blank">
-                            <i class="fas fa-download me-1"></i>Download
+                        <a href="${imageData.url}" class="btn btn-sm btn-primary" download target="_blank">
+                            <i class="fas fa-download me-1"></i>View Full Size
                         </a>
                         <button class="btn btn-sm btn-outline-secondary copy-prompt-btn" 
                             data-prompt="${encodeURIComponent(promptInput.value)}">
