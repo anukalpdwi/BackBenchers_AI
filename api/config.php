@@ -11,15 +11,16 @@ error_reporting(E_ALL);
 // API Keys and configuration
 $config = [
     'unsplash' => [
-        'access_key' => getenv('UNSPLASH_ACCESS_KEY'),
+        'access_key' => 'ichOqfSyjSsXzY3SdDU8FazEYktkXcTZZblLshF7HXk',  // Directly insert key
         'api_url' => 'https://api.unsplash.com/search/photos',
         'per_page' => 6
     ],
     'starryai' => [
-        'api_key' => getenv('STARRYAI_API_KEY'),
+        'api_key' => '',  // Add your StarryAI key here if needed
         'api_url' => 'https://api.starryai.com/v1/generation'
     ]
 ];
+
 
 // Helper function to return JSON response
 function sendJsonResponse($data, $statusCode = 200) {

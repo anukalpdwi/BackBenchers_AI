@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Image Generator</title>
+    <title>BackBenchers AI</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
@@ -13,20 +13,18 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
 </head>
 <body>
     <!-- Header -->
-    <header class="header-container mb-4">
+    <header class="header-container mb-4 mt-2 fs-7">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand" href="#">
-                    <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" stroke="#3f83f8"></circle>
-                        <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="#3f83f8"></path>
-                        <line x1="9" y1="9" x2="9.01" y2="9" stroke="#3f83f8"></line>
-                        <line x1="15" y1="9" x2="15.01" y2="9" stroke="#3f83f8"></line>
-                    </svg>
-                    AI Image Generator
+                <a class="navbar-brand fs-4" href="#">
+                    BackBenchers.Ai
                 </a>
                 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,15 +34,17 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" href="https://unsplash.com/?utm_source=ai_image_generator&utm_medium=referral" target="_blank">
-                                <i class="fas fa-camera me-1"></i>Powered by Unsplash
+                            <a class="nav-link active">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#about">About
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#about">
-                                <i class="fas fa-info-circle me-1"></i>About
+                            <a class="nav-link" href="#team-section">Team
                             </a>
                         </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -70,39 +70,37 @@
                         <div class="generator-card">
                             <form id="generator-form">
                                 <div class="mb-3">
-                                    <label for="prompt-input" class="form-label">Enter your prompt</label>
+                                    
                                     <textarea 
                                         id="prompt-input" 
                                         class="form-control" 
-                                        rows="3" 
+                                        rows="1" 
                                         placeholder="Describe the image you want to generate..."
                                         required
                                     ></textarea>
-                                    <div class="form-text">Be specific and detailed for better results</div>
-                                </div>
+                                    
                                 
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="style-select" class="form-label">Image style</label>
+                                    <!---->
+                                    <div class="col-md-6">
+                                        <label for="style-select" class="form-label"></label>
                                         <select id="style-select" class="form-select">
                                             <option value="photo">Photographic</option>
                                             <option value="digital-art">Digital Art</option>
-                                            <option value="anime">Anime</option>
-                                            <option value="oil-painting">Oil Painting</option>
-                                            <option value="black-and-white">Black & White</option>
-                                            <option value="minimal">Minimal</option>
-                                            <option value="vibrant">Vibrant</option>
                                         </select>
                                     </div>
                                     
-                                    <div class="col-md-6 mb-3">
-                                        <label for="image-count" class="form-label">Number of images</label>
+                                    <div class="col-md-6">
+                                        <label for="image-count" class="form-label text-center"></label>
                                         <select id="image-count" class="form-select">
                                             <option value="1">1 image</option>
                                             <option value="2">2 images</option>
                                             <option value="4">4 images</option>
                                         </select>
                                     </div>
+                                    
+                                </div>
+                                
                                 </div>
                                 
                                 <div class="alert alert-danger d-none" role="alert" id="error-alert">
@@ -110,13 +108,15 @@
                                     <span id="error-message">Error message goes here</span>
                                 </div>
                                 
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <div class="d-grid gap-4 d-md-flex btn-lg justify-content-md-center mt-4">
+                                    <button type="submit" id="generate-btn" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-magic me-2"></i>Generate
+                                    </button>
+
                                     <button type="button" id="reset-btn" class="btn btn-outline-secondary">
                                         <i class="fas fa-redo me-1"></i>Reset
                                     </button>
-                                    <button type="submit" id="generate-btn" class="btn btn-primary">
-                                        <i class="fas fa-magic me-2"></i>Generate
-                                    </button>
+                                    
                                 </div>
                             </form>
                         </div>
@@ -145,35 +145,68 @@
                 <div class="row justify-content-center">
                     <div class="col-md-10 col-lg-8">
                         <div class="generator-card">
-                            <h2 class="mb-4">About AI Image Generator</h2>
-                            <p>
-                                Our AI Image Generator uses the power of artificial intelligence to create stunning 
-                                images based on your text descriptions. We leverage the high-quality photo library 
-                                from Unsplash to provide you with beautiful visuals that match your creativity.
-                            </p>
-                            <p>
-                                You can generate images in various styles including photographic, digital art, 
-                                anime, oil paintings, and more. Simply enter a detailed description, choose your 
-                                preferred style, and our AI will do the rest.
-                            </p>
-                            <p>
-                                All images are sourced from Unsplash and are free to use under their 
-                                <a href="https://unsplash.com/license" target="_blank">license</a>. 
-                                Please make sure to credit the photographers when using these images in your projects.
-                            </p>
+                            <h2 class="mb-4">About BackBenchers.AI</h2>
+<p>
+    BackBenchers.AI is a <strong>B.Sc. (CS) 2nd Year Student Project</strong> from 
+    <strong>Pt. Sambhunath Shukla University</strong>, developed under the guidance of the 
+    <strong>Department of Computer Science</strong> at PTSNS University.
+</p>
+<p>
+    This project is an <strong>AI-powered image generator</strong> that uses artificial intelligence 
+    to transform text descriptions into visually stunning images. It allows users to generate 
+    images in various styles, including <em>photographic, digital art, anime, oil paintings,</em> and more. 
+    Leveraging high-quality image resources from Unsplash, BackBenchers.AI ensures beautiful and creative visuals 
+    that match users' descriptions.
+</p>
+
+
                         </div>
                     </div>
                 </div>
             </section>
         </div>
     </main>
+
+    <!-- Our Team -->
+    <section class="team-section" id="team-section">
+        <h2 class="mb-4 text-center">Our Team</h2>
+        <div class="team-container">
+            <div class="team-member">
+                <img src="Our Team/Anukalp.png" alt="Anukalp Dwivedi">
+                <h4>Anukalp Dwivedi</h4>
+                <a href="https://www.linkedin.com/in/anukalp-dwivedi/" target="_blank">
+                    <i class="fab fa-linkedin"></i></a>
+            </div>
+            <div class="team-member">
+                <img src="Our Team/Nikhil.jpg" alt="Nikhil Sharma">
+                <h4>Nikhil Sharma</h4>
+                <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+            <div class="team-member">
+                <img src="Our Team/Ashutosh.jpg" alt="Ashutosh Lariya">
+                <h4>Ashutosh Lariya</h4>
+                <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+            <div class="team-member">
+                <img src="Our Team/Chitranshu.jpg" alt="Chitranshu Shrivastav">
+                <h4>Chitranshu Shrivastav</h4>
+                <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+            <div class="team-member">
+                <img src="Our Team/Sajeb.png" alt="Sajeb Jilani">
+                <h4>Sajeb Jilani</h4>
+                <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </section>
+    
     
     <!-- Footer -->
     <footer class="mt-auto">
         <div class="container">
             <p>
-                &copy; 2025 AI Image Generator. Powered by 
-                <a href="https://unsplash.com/?utm_source=ai_image_generator&utm_medium=referral" target="_blank">Unsplash</a>.
+                &copy; 2025 BackBenchers Ai. All rights reserved.
+                <a href="https://www.linkedin.com/in/anukalp-dwivedi/" target="_blank">Anukalp Dwivedi</a>.
             </p>
             <p>
                 <small>

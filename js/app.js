@@ -1,6 +1,11 @@
 /**
  * Main JavaScript for AI Image Generator
  */
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const generatorForm = document.getElementById('generator-form');
@@ -65,20 +70,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // API Call to generate image
     async function generateImage(formData) {
         try {
-            const response = await fetch('/api/generate.php', {
+            const response = await fetch('http://localhost/StarryImageCraft/api/generate.php', { // Updated API URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             });
-            
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
             return await response.json();
         } catch (error) {
             console.error('API call error:', error);
             throw error;
         }
     }
+
+    
+    
     
     // Display generated images in the UI
     function displayImages(images) {
@@ -120,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             imagesContainer.appendChild(imageCol);
         });
+        
         
         // Add event listeners to copy prompt buttons
         document.querySelectorAll('.copy-prompt-btn').forEach(button => {
@@ -199,3 +212,4 @@ document.addEventListener('DOMContentLoaded', function() {
         errorAlert.classList.add('d-none');
     }
 });
+
