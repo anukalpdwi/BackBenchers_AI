@@ -1,0 +1,11 @@
+services:
+  - name: php-app
+    type: web
+    env: docker
+    repo: https://github.com/anukalpdwi/BackBenchers_AI
+    branch: main
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 80
