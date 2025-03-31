@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // API Call to generate image
     async function generateImage(formData) {
         try {
-            const response = await fetch("https://your-app.onrender.com/api/generate.php", {
+            const response = await fetch("https://backbenchers-ai.onrender.com/api/generate.php", {
                 // Updated API URL
                 method: 'POST',
                 headers: {
