@@ -26,7 +26,7 @@ if (empty($config['unsplash']['access_key'])) {
     sendErrorResponse('Unsplash API key is not configured.', 500);
 }
 
-// Try Unsplash API first as it's more reliable for photos
+
 try {
     // Prepare Unsplash API request
     $apiUrl = $config['unsplash']['api_url'];

@@ -13,7 +13,7 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
-
+    <!--Font-->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 
@@ -180,7 +180,7 @@
             <div class="team-member">
                 <img src="Our Team/Nikhil.jpg" alt="Nikhil Sharma">
                 <h4>Nikhil Sharma</h4>
-                <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://www.linkedin.com/in/nikhil-sharma-4117442a4 " target="_blank"><i class="fab fa-linkedin"></i></a>
             </div>
             <div class="team-member">
                 <img src="Our Team/Ashutosh.jpg" alt="Ashutosh Lariya">

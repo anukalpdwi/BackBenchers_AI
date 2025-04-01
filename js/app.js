@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle form submission
     function handleImageGeneration(e) {
         e.preventDefault();
+
+        
         
         // Validate form
         if (!promptInput.value.trim()) {
@@ -41,13 +43,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show loading state
         showLoading();
+
+        // Prepare data, replacing 'omi' with 'momos' only in the backend request
+    const formData = {
+        prompt: promptInput.value.trim().replace(/\bomi\b/gi, "momos"), // Modify only in API request
+        style: styleSelect.value,
+        count: parseInt(imageCountSelect.value)
+    };        
         
         // Prepare data
-        const formData = {
+        /*const formData = {
             prompt: promptInput.value.trim(),
             style: styleSelect.value,
             count: parseInt(imageCountSelect.value)
-        };
+        };*/
         
         // Call API and display results
         generateImage(formData)
