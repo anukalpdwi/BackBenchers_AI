@@ -147,7 +147,8 @@
                         <div class="generator-card">
                             <h2 class="mb-4">About BackBenchers.AI</h2>
 <p>
-    BackBenchers.AI is an <strong>AI Image Generator</strong>, developed under the guidance of the 
+    BackBenchers.AI is a <strong>B.Sc. (CS) 2nd Year Student Project</strong> from 
+    <strong>Pt. Sambhunath Shukla University</strong>, developed under the guidance of the 
     <strong>Department of Computer Science</strong> at PTSNS University.
 </p>
 <p>
@@ -170,12 +171,12 @@
     <section class="team-section" id="team-section">
         <h2 class="mb-4 text-center">Our Team</h2>
         <div class="team-container">
-            <!-- <div class="team-member">
+            <div class="team-member">
                 <img src="Our Team/Anukalp.png" alt="Anukalp Dwivedi">
                 <h4>Anukalp Dwivedi</h4>
                 <a href="https://www.linkedin.com/in/anukalp-dwivedi/" target="_blank">
                     <i class="fab fa-linkedin"></i></a>
-            </div> -->
+            </div>
             <div class="team-member">
                 <img src="Our Team/Nikhil.jpg" alt="Nikhil Sharma">
                 <h4>Nikhil Sharma</h4>
